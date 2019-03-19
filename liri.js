@@ -22,4 +22,20 @@ if (cmd === "spotify-this-song") {
 }
 else {
     getSpotify("default");
+
+// else if for OMDB?
+} else if (cmd === "movie-this") {
+    if(option1) {
+        var nodeArgs = process.argv.slice(2).join('');
+        movieName = option1;
+        getMovie ();
+
+    } else {
+        movieName = "Mr. Nobody";
+        getMovie();
+    }
+} else if (cmd === "do-what-it-says") {
+    readFile();
+} else {
+    console.log("Your instructions could not be understood.")
 }
