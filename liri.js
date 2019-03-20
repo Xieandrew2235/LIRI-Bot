@@ -2,7 +2,7 @@
 require("dotenv").config();
 var axios = require("axios");
 // Spotify API
-var spotify = new Spotify(keys.spotify);
+// var spotify = new Spotify(keys.spotify);
 // OMDB API
 axios.get("http://www.omdbapi.com/?t=remember+the+titans&y=&plot=short&apikey=trilogy")
     .then(
