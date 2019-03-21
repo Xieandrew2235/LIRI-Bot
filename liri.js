@@ -84,6 +84,7 @@ function movieThis(movieName) {
 }
 
 // Function to call "random.txt for 'do-what-it-says'
+// Need to complete this function so that it calls on whatever is typed into text and runs that function to either show Spotify, Bands In Town, or OMDB results
 function readFile() {
     fs.readFile("./random.txt", "utf-8", function (error, data) {
         if (error) {
