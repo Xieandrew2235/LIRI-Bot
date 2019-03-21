@@ -33,17 +33,9 @@ switch (option) {
         break;
     default:
         console.log(
-            "Please enter a valid command; 'movie-this', 'concert-this', 'spotify-this-song', or 'do-what-it-says' "
+            "Only 'movie-this', 'concert-this', 'spotify-this-song', or 'do-what-it-says' pls, I don't speak any other languages. Thx. "
         );
 }
-// Read file, retrieve content, and parse string
-fs.readFile("random.txt", "utf8", function (error, data) {
-    var data = data.split(",");
-    var thatWay = data[1];
-    if (error) {
-        return console.log(error);
-    }
-})
 
 // Function for the Bands In Town API
 function concertThis(artist) {
