@@ -1,111 +1,101 @@
-//
 require("dotenv").config();
+// Require keys from keys.js, node-spotify-api, axios, and moment npms to be installed
+var keys = require("./keys.js");
+var Spotify = require('node-spotify-api');
 var axios = require("axios");
-// Requiring the keys from keys.js
-var keys = require("keys.js");
-var Spotify = require("node-spotify-api");
+var moment = require("moment");
 var fs = require("fs");
+
+// Grab command line arguements from Node
+var cmd = process.argv[3];
+var option = process.argv[2];
+// Store all arguements
+var query = process.argv;
+
 var spotify = new Spotify(keys.spotify);
 
-// Grab command line/user input and stores arguements in an array
-var nodeArgs = process.argv;
-var cmd2 = process.argv[3];
-// var spotify = new Spotify(keys.spotify);
+var userSubject = process.argv.slice(3).join(" ");
+console.log(userSubject)
 
-// Empty string to hold user entry for OMDB
-var movieName = "";
-// Bands in town empty string
-var name = "";
-
-for (var i = 3; i < input.length; i++) {
-    if (i > 3 && i < input.length) {
-        name = name + "+" + input[i];
-    } else {
-        name += input[i];
-    }
+// Switch cases that tests for user input and will know which function to call based on user input
+switch (option) {
+    case "movie-this":
+        movieThis(userSubject);
+        break;
+    case "spotify-this-song":
+        spotifyCall(userSubject);
+        break;
+    case "concert-this":
+        concertThis(userSubject);
+        break;
+    case "do-what-it-says":
+        action(userSubject);
+        break;
+    default:
+        console.log(
+            "Please enter a valid command; 'movie-this', 'concert-this', 'spotify-this-song', or 'do-what-it-says' "
+        );
 }
-
-
-// Switch statement so that the value of an expression is compared to all cases and when there is a match, the associated block of code will be executed
-function userOptions(userChoice, userSearch) {
-    switch (userChoice) {
-        case "concert-this":
-            bandsInTown(name);
-            break;
-
-        case "spotify-this-song":
-            musicSpotify(name);
-            break;
-
-        case "movie-this":
-            movieOMDB(name);
-            break;
-
-        case "do-what-it-says":
-            doWhatItSays();
-            break;
-
-        default:
-            console.log("Invalid input, try again.");
+// Read file, retrieve content, and parse string
+fs.readFile("random.txt", "utf8", function (error, data) {
+    var data = data.split(",");
+    var thatWay = data[1];
+    if (error) {
+        return console.log(error);
     }
-}
-userOptions();
+})
 
-// Bands In Town API
-function bandsInTown() {
-
-    // Querying the bandsintown api for the selected artist, the ?app_id parameter is required, but can equal anything
-    var queryURL = "https://rest.bandsintown.com/artists/" + name + "?app_id=codingbootcamp";
-    $.ajax({
-        url: queryURL,
-        method: "GET"
-    }).then(function (response) {
-        console.log(queryURL);
-        // Printing the entire object to console
-        request(queryURL, function(error, response, body) {
-            // variable to parse data with JSON.parse() 
-            var pbody = JSON.parse(body);
-            if(!error){
-                pbody.forEach(function(element) {
-                    console.log("Venue name: " + element.venue.name);
-                    console.log("Venue location: " + element.venue.city + "," + element.venue.region + "," + element.venue.country);
-                    console.log("Date: " + moment(element.datetime).format("MM/DD/YYYY"));
-                });
-            }
+// Function for the Bands In Town API
+function concertThis(artist) {
+    var bandsQueryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+    // Creating an axios request to the queryUrl for Bands In Town API
+    // Which then console logs upcoming events and the artist name, venue, location, and date of upcoming concert
+    axios.get(bandsQueryUrl).then(
+        function (response) {
+            console.log("Upcoming Events!");
+            console.log("Artist: " + artist + "\nVenue: " + response.data[0].venue.name + "\nLocation: " + response.data[0].venue.country + "\nDate: " + response.data[0].datetime);
         });
-    
+}
 // Function to get song from Spotify API
-function callSpotify() {
-    // If user input is blank, search for The Sign Ace of Base"
-    if (name === "") {
-      name = "The Sign Ace of Base";
-    }
-  
-    spotify.search({ type: "track", query: name, limit: "10" }, function(
-      error,
-      data
-    ) {
-      if (error) {
-        return console.log("Error occurred: " + error);
-      }
-  
-      var song = data.tracks.items[0];
-      console.log("Artist(s) - " + song.artists[0].name);
-      console.log("Name of song - " + song.name);
-      console.log("Preview link on spotify - " + song.preview_url);
-      console.log("Album - " + song.album.name);
+// If error return error; otherwise, console log the Artist name, song name, Spotify preview link, and album name
+function spotifyCall(songName) {
+    spotify.search({ type: 'artist,track', query: songName }, function (err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        }
+        console.log("Artist: " + data.tracks.items[0].album.artists[0].name);
+        console.log("Song: " + data.tracks.items[0].name);
+        console.log("Preview link of the song from Spotify: " + data.tracks.items[0].external_urls.spotify);
+        console.log("The album that the song is from: " + data.tracks.items[0].album.name);
     });
-  
-// Function to get movie from OMDB
+}
 
-// Function to call "random.txt"
-function readFile() {
-    readFile("random.txt", "utf-8", function (error, data) {
+// Function for OMDB API
+
+function movieThis(movieName) {
+    // If movie name is not entered by user, then by default the information for Mr. Nobody will be pulled
+    // Otherwise, by way of an axios request, it will console.log the Title, Release Year, Rating, Rating, Release Country, Plot, Language, and Actors
+    if (!movieName) {
+        movieName = "Mr. Nobody";
+    }
+    var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+
+    // Creating an axios request to the queryUrl for OMDB API
+    axios.get(queryUrl).then(
+        function (response) {
+            if (!movieName) {
+                movieName = "Mr. Nobody";
+            }
+            console.log("\n_Movie Info_" + "\nTitle: " + response.data.Title + "\nRelease Year: " + response.data.Year + "\nRating: " + response.data.Rated + "\nRelease Country: " + response.data.Country + "\nLanguage: " + response.data.Language + "\nPlot: " + response.data.Plot + "\nActors: " + response.data.Actors);
+        }
+    );
+}
+
+// Function to call "random.txt for 'do-what-it-says'
+function action() {
+    fs.readFile("./random.txt", "utf-8", function (error, fileText) {
         if (error) {
             return console.log("error");
         }
-        // Splits text into an array with commas, then console logging it again
-        var dataArr = data.trim().split(",");
-        console.log(dataArr);
     });
 }
