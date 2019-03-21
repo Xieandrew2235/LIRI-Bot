@@ -4,7 +4,9 @@
 
 ## Instructions
 <hr>
+
 1. Open the LIRI-BOT folder in your terminal, and type in your command line:
+
     * npm install axios
     * npm install spotify
     * npm install moment
