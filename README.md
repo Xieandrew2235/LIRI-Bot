@@ -11,7 +11,7 @@
     * npm install node-spotify-api
     * npm install dotenv
 
-![GIF](/install.gif)
+![GIF]("/install.gif" width: "250px")
 
 2. You can then choose from 4 options
 
@@ -23,4 +23,4 @@
 
     * Last but not least (still a work in progress), we have the command line "do-what-it-says". When you enter: node liri.js do-what-it-says , it should run the command given in random.txt.
 
-    ![GIF](/demo.gif)
+    ![GIF]("/demo.gif" width: "250px")
