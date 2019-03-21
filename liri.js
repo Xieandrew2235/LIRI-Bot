@@ -1,15 +1,55 @@
 //
 require("dotenv").config();
 var axios = require("axios");
+// Requiring the keys from keys.js
+var keys = require("keys.js");
+var Spotify = require("node-spotify-api");
+var fs = require("fs");
+var spotify = new Spotify(keys.spotify);
+
+// Grab command line/user input and stores arguements in an array
+var nodeArgs = process.argv;
+var cmd2 = process.argv[3];
 // Spotify API
 // var spotify = new Spotify(keys.spotify);
 // OMDB API
-axios.get("http://www.omdbapi.com/?t=remember+the+titans&y=&plot=short&apikey=trilogy")
-    .then(
-        function (response) {
-            console.log("The movie's rating is: ", response);
-        }
-    );
+// Empty string to hold user entry for OMDB
+var movieName = "";
+
+for (var i = 3; i < input.length; i++) {
+    if (i > 3 && i < input.length) {
+        name = name + "+" + input[i];
+    } else {
+        name += input[i];
+    }
+}
+
+
+// Make it so liri.js can take in one of the following commands:
+function userOptions(userChoice, userSearch) {
+    switch (userChoice) {
+        case "concert-this":
+            bandsInTown(name);
+            break;
+
+        case "spotify-this-song":
+            musicSpotify(name);
+            break;
+
+        case "movie-this":
+            movieOMDB(name);
+            break;
+
+        case "do-what-it-says":
+            doWhatItSays();
+            break;
+
+        default:
+            console.log("Invalid input, try again.");
+    }
+}
+userOptions();
+
 // Bands In Town API
 function searchBandsInTown(artist) {
 
@@ -23,17 +63,9 @@ function searchBandsInTown(artist) {
         // Printing the entire object to console
         console.log(response);
         searchBandsInTown(inputArtist);
-        // Authenticate from keys.js
-        var keys = require("keys.js");
 
-        // Grab command lines
-        var cmd = process.argv[2];
-        var cmd2 = process.argv[3];
 
-        // Store arguements in an array
-        var nodeArgs = process.argv;
-        // Empty string to hold movie name entry
-        var movieName = "";
+
 
         // Run function with user-inputted song name; otherwise run default song
         if (cmd === "spotify-this-song") {
@@ -85,14 +117,15 @@ function getSpotify(input) {
         });
     } else {
         // Search for "The Sign" by Ace of Base
-    }}
+    }
+}
 // Function to get movie from OMDB
 
 // Function to call "random.txt"
 function readFile() {
-    readFile("random.txt", "utf-8", function(error, data){
+    readFile("random.txt", "utf-8", function (error, data) {
         if (error) {
-            return console.log("error"); 
+            return console.log("error");
         }
         // Splits text into an array with commas, then console logging it again
         var dataArr = data.trim().split(",");
