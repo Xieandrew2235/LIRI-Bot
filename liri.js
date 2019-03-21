@@ -10,11 +10,12 @@ var spotify = new Spotify(keys.spotify);
 // Grab command line/user input and stores arguements in an array
 var nodeArgs = process.argv;
 var cmd2 = process.argv[3];
-// Spotify API
 // var spotify = new Spotify(keys.spotify);
-// OMDB API
+
 // Empty string to hold user entry for OMDB
 var movieName = "";
+// Bands in town empty string
+var name = "";
 
 for (var i = 3; i < input.length; i++) {
     if (i > 3 && i < input.length) {
@@ -25,7 +26,7 @@ for (var i = 3; i < input.length; i++) {
 }
 
 
-// Make it so liri.js can take in one of the following commands:
+// Switch statement so that the value of an expression is compared to all cases and when there is a match, the associated block of code will be executed
 function userOptions(userChoice, userSearch) {
     switch (userChoice) {
         case "concert-this":
@@ -51,74 +52,50 @@ function userOptions(userChoice, userSearch) {
 userOptions();
 
 // Bands In Town API
-function searchBandsInTown(artist) {
+function bandsInTown() {
 
     // Querying the bandsintown api for the selected artist, the ?app_id parameter is required, but can equal anything
-    var queryURL = "https://rest.bandsintown.com/artists/" + artist + "?app_id=codingbootcamp";
+    var queryURL = "https://rest.bandsintown.com/artists/" + name + "?app_id=codingbootcamp";
     $.ajax({
         url: queryURL,
         method: "GET"
     }).then(function (response) {
         console.log(queryURL);
         // Printing the entire object to console
-        console.log(response);
-        searchBandsInTown(inputArtist);
-
-
-
-
-        // Run function with user-inputted song name; otherwise run default song
-        if (cmd === "spotify-this-song") {
-            getSpotify(option1);
-        }
-        else {
-            getSpotify("default");
-
-            // else if for OMDB?
-        } if (cmd === "movie-this") {
-            if (option1) {
-                var nodeArgs = process.argv.slice(2).join('');
-                movieName = option1;
-                getMovie();
-                // Display Mr. Nobody if user doesn't input a movie name
-            } else {
-                movieName = "Mr. Nobody";
-                getMovie();
+        request(queryURL, function(error, response, body) {
+            // variable to parse data with JSON.parse() 
+            var pbody = JSON.parse(body);
+            if(!error){
+                pbody.forEach(function(element) {
+                    console.log("Venue name: " + element.venue.name);
+                    console.log("Venue location: " + element.venue.city + "," + element.venue.region + "," + element.venue.country);
+                    console.log("Date: " + moment(element.datetime).format("MM/DD/YYYY"));
+                });
             }
-            // If user enters "do-what-it-says", then readFile
-        } else if (cmd === "do-what-it-says") {
-            readFile();
-        } else {
-            console.log("Your instructions could not be understood.")
-        }
-    })
-}
-
-
-// Function to get song from Spotify API
-function getSpotify(input) {
-    var spotify = new Spotify({
-        id: '3c9d59c949b648a88d55122b6430d155',
-        secret: '38db73fbb20e43af9c8ab66f14dec74a',
-    });
-    // Search for song on Spotify based on user input
-    if (input) {
-        spotify.search({
-            type: 'track',
-            query: input
-        }, function (err, data) {
-            if (err) {
-                return console.log('Error occurred: ' + err);
-            }
-            console.log("Artist: " + data.tracks.items[0].album.artists[0].name);
-            console.log("Song: " + data.tracks.items[0].name);
-            console.log("Preview link of the song from Spotify: " + data.tracks.items[0].preview_url);
-            console.log("The album that the song is from: " + data.tracks.items[0].album.name);
         });
-    } else {
-        // Search for "The Sign" by Ace of Base
+    
+// Function to get song from Spotify API
+function callSpotify() {
+    // If user input is blank, search for The Sign Ace of Base"
+    if (name === "") {
+      name = "The Sign Ace of Base";
     }
-}
+  
+    spotify.search({ type: "track", query: name, limit: "10" }, function(
+      error,
+      data
+    ) {
+      if (error) {
+        return console.log("Error occurred: " + error);
+      }
+  
+      var song = data.tracks.items[0];
+      console.log("Artist(s) - " + song.artists[0].name);
+      console.log("Name of song - " + song.name);
+      console.log("Preview link on spotify - " + song.preview_url);
+      console.log("Album - " + song.album.name);
+    });
+  
 // Function to get movie from OMDB
 
 // Function to call "random.txt"
