@@ -1,16 +1,17 @@
-### Assignment: LIRI-Bot
+# Assignment: LIRI-Bot
 <hr>
 <strong>Description: </strong> LIRI is SIRI's long-lost sister, who only functions in the terminals of Macs and Windows for coders, whereas Siri services the billions of iPhone users in the world. LIRI is a command line node app that takes in parameters and returns data.
 
 ## Instructions
 <hr>
-
 1. Open the LIRI-BOT folder in your terminal, and type in your command line:
     * npm install axios
     * npm install spotify
     * npm install moment
     * npm install node-spotify-api
     * npm install dotenv
+
+![GIF](/install.gif)
 
 2. You can then choose from 4 options
 
@@ -21,3 +22,5 @@
     * To search for movie information, we utilize the OMDB API. In your command line, you would enter: node liri.js movie-this "name of movie", which will return the title, year it was made, IMDB rating, production country, language, a short plot, and actors in the movie.
 
     * Last but not least (still a work in progress), we have the command line "do-what-it-says". When you enter: node liri.js do-what-it-says , it should run the command given in random.txt.
+
+    ![GIF](/demo.gif)

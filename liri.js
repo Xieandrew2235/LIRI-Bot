@@ -29,7 +29,7 @@ switch (option) {
         concertThis(userSubject);
         break;
     case "do-what-it-says":
-        action(userSubject);
+        readFile(userSubject);
         break;
     default:
         console.log(
@@ -84,8 +84,8 @@ function movieThis(movieName) {
 }
 
 // Function to call "random.txt for 'do-what-it-says'
-function action() {
-    fs.readFile("./random.txt", "utf-8", function (error, fileText) {
+function readFile() {
+    fs.readFile("./random.txt", "utf-8", function (error, data) {
         if (error) {
             return console.log("error");
         }
